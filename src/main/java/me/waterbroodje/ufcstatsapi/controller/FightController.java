@@ -8,4 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class FightController {
 
     @Autowired private FightService fightService;
+
+
 }

@@ -1,7 +1,6 @@
 package me.waterbroodje.ufcstatsapi.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,4 +14,11 @@ import lombok.Setter;
 @Table(name = "fighters")
 public class Fighter {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremented ID
+    private String id;
+
+    private String firstName;
+    private String lastName;
+    private String nickname;
 }
