@@ -20,4 +20,12 @@ public class RefereeService {
     public List<Referee> getAll() {
         return refereeRepository.findAll();
     }
+
+    public Referee save(Referee referee) {
+        return refereeRepository.save(referee);
+    }
+
+    public void delete(Long id) {
+        refereeRepository.deleteById(id);
+    }
 }
