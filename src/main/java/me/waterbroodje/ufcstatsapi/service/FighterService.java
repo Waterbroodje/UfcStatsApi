@@ -15,8 +15,8 @@ public class FighterService {
     @Autowired
     private FighterRepository fighterRepository;
 
-    public Optional<Fighter> getFighterById(Long id) {
-        return fighterRepository.findById(id);
+    public Optional<Fighter> getFighterById(String id) {
+        return fighterRepository.findFighterById(id);
     }
 
     public List<Fighter> searchFightersByName(String name) {

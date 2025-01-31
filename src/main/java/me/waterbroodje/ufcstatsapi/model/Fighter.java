@@ -18,7 +18,5 @@ public class Fighter {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremented ID
     private String id;
 
-    private String firstName;
-    private String lastName;
-    private String nickname;
+    private String name;
 }

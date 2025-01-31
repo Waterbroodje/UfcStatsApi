@@ -1,6 +1,9 @@
 package me.waterbroodje.ufcstatsapi.component;
 
 import me.waterbroodje.JavaScraper;
+import me.waterbroodje.ufcstatsapi.model.Fight;
+import me.waterbroodje.ufcstatsapi.model.Fighter;
+import me.waterbroodje.ufcstatsapi.model.Referee;
 import me.waterbroodje.ufcstatsapi.service.FightService;
 import me.waterbroodje.ufcstatsapi.service.FighterService;
 import me.waterbroodje.ufcstatsapi.service.RefereeService;
@@ -9,12 +12,14 @@ import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 @Component
 public class ScrapeComponent {
 
-    @Autowired private FightService fightService;
-    @Autowired private FighterService fighterService;
-    @Autowired private RefereeService refereeService;
+    @Autowired public static FightService fightService;
+    @Autowired public static FighterService fighterService;
+    @Autowired public static RefereeService refereeService;
 
     public static void main(String[] args) {
         JavaScraper javaScraper = new JavaScraper();
@@ -50,6 +55,11 @@ public class ScrapeComponent {
                                     String dataLink = fight.attr("data-link");
                                     if (!dataLink.isEmpty()) {
                                         Document fightPage = javaScraper.getStaticDocument(dataLink, true, true, JavaScraper.defaultHeaders());
+                                        AtomicReference<Fighter> firstFighter = new AtomicReference<>();
+                                        AtomicReference<Fighter> secondFighter = new AtomicReference<>();
+                                        AtomicReference<String> firstFighterResult = new AtomicReference<>();
+                                        AtomicReference<String> secondFighterResult = new AtomicReference<>();
+
                                         fightPage.getElementsByClass("b-fight-details")
                                                 .get(0)
                                                 .getElementsByClass("b-fight-details__person")
@@ -58,12 +68,26 @@ public class ScrapeComponent {
                                                     String fighterId = fightPerson.getElementsByClass("b-fight-details__person-link").get(0).attr("href").replace("http://www.ufcstats.com/fighter-details/", "");
                                                     String fighterName = fightPerson.getElementsByClass("b-fight-details__person-link").get(0).text();
 
-                                                    System.out.println(fighterId + " " + fighterName + " " + result);
+                                                    if (firstFighter.get() == null) {
+                                                        firstFighter.set(fighterService.getFighterById(fighterId).orElse(new Fighter()));
+                                                        firstFighter.get().setId(fighterId);
+                                                        firstFighter.get().setName(fighterName);
+
+                                                        firstFighterResult.set(result);
+                                                    } else {
+                                                        secondFighter.set(fighterService.getFighterById(fighterId).orElse(new Fighter()));
+                                                        secondFighter.get().setId(fighterId);
+                                                        secondFighter.get().setName(fighterName);
+
+                                                        secondFighterResult.set(result);
+                                                    }
                                                 });
+
+                                        fighterService.saveFighter(firstFighter.get());
+                                        fighterService.saveFighter(secondFighter.get());
 
                                         Element fightDetails = fightPage.getElementsByClass("b-fight-details__fight").first();
                                         String head = fightDetails.getElementsByClass("b-fight-details__fight-title").text();
-                                        System.out.println(head);
 
                                         Element content = fightDetails.getElementsByClass("b-fight-details__content").first();
 
@@ -75,13 +99,22 @@ public class ScrapeComponent {
                                         String referee = content.select(".b-fight-details__label:contains(Referee:) + span").text();
                                         String details = content.select(".b-fight-details__label:contains(Details:)").first().parent().parent().text().replace("Details: ", "");
 
-                                        System.out.println("Method: " + method);
-                                        System.out.println("Round: " + round);
-                                        System.out.println("Time: " + time);
-                                        System.out.println("Time Format: " + timeFormat);
-                                        System.out.println("Referee: " + referee);
-                                        System.out.println("Details: " + details);
-                                        System.out.println();
+                                        Fight databaseFight = fightService.getFight(dataLink.replace("http://www.ufcstats.com/fight-details/", "")).orElse(new Fight());
+                                        databaseFight.setMethod(method);
+                                        databaseFight.setRound(round);
+                                        databaseFight.setTime(time);
+                                        databaseFight.setTimeFormat(timeFormat);
+                                        databaseFight.setDetails(details);
+                                        databaseFight.setFirstFighterResult(firstFighterResult.get());
+                                        databaseFight.setSecondFighterResult(secondFighterResult.get());
+
+                                        Referee databaseReferee = refereeService.getRefereeByName(referee).orElse(new Referee());
+                                        databaseReferee.setName(referee);
+                                        refereeService.save(databaseReferee);
+
+                                        databaseFight.setReferee(databaseReferee);
+
+                                        fightService.save(databaseFight);
                                     }
                                 });
                     }
