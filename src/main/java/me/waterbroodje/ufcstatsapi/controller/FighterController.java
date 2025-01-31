@@ -7,41 +7,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/fighters")
+@RequestMapping("/api/fighters")
 public class FighterController {
 
     @Autowired
     private FighterService fighterService;
 
-    // Get fighter by ID
+    @GetMapping
+    public List<Fighter> getAllFighters() {
+        return fighterService.getAllFighters();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Fighter> getFighterById(@PathVariable Long id) {
-        Optional<Fighter> fighter = fighterService.getFighterById(id);
-        if (fighter.isPresent()) {
-            return ResponseEntity.ok(fighter.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return fighterService.getFighterById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // Search fighters by name
     @GetMapping("/search")
-    public ResponseEntity<List<Fighter>> searchFighters(@RequestParam String name) {
-        List<Fighter> fighters = fighterService.searchFightersByName(name);
-        if (!fighters.isEmpty()) {
-            return ResponseEntity.ok(fighters);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+    public List<Fighter> searchFighters(@RequestParam String name) {
+        return fighterService.searchFightersByName(name);
     }
 
-    // Endpoint to get all fighters
-    @GetMapping
-    public ResponseEntity<List<Fighter>> getAllFighters() {
-        List<Fighter> fighters = fighterService.getAllFighters();
-        return ResponseEntity.ok(fighters);
+    @PostMapping
+    public Fighter createFighter(@RequestBody Fighter fighter) {
+        return fighterService.saveFighter(fighter);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Fighter> updateFighter(@PathVariable Long id, @RequestBody Fighter fighter) {
+        return fighterService.getFighterById(id)
+                .map(existingFighter -> {
+                    fighter.setId(id);
+                    return ResponseEntity.ok(fighterService.saveFighter(fighter));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
