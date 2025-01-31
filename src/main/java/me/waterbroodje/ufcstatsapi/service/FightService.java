@@ -3,6 +3,9 @@ package me.waterbroodje.ufcstatsapi.service;
 import me.waterbroodje.ufcstatsapi.model.Fight;
 import me.waterbroodje.ufcstatsapi.repository.FightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +20,15 @@ public class FightService {
     public Optional<Fight> getFight(String id) {
         return fightRepository.getFightByFightId(id);
     }
-    
+
     @Transactional
     public void save(Fight fight) {
         fightRepository.save(fight);
     }
 
-    public List<Fight> getAllFights() {
-        return fightRepository.findAll();
+    public Page<Fight> getAllFights(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return fightRepository.findAll(pageable);
     }
 
     public Fight getFightById(String id) {

@@ -1,6 +1,5 @@
 package me.waterbroodje.ufcstatsapi.controller;
 
-import me.waterbroodje.ufcstatsapi.model.Fight;
 import me.waterbroodje.ufcstatsapi.model.Fighter;
 import me.waterbroodje.ufcstatsapi.service.FighterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/fighters")
+@RequestMapping("/api/fighters")
 public class FighterController {
 
     @Autowired private FighterService fighterService;

@@ -24,7 +24,7 @@ public class AdminController {
     @Autowired public FighterService fighterService;
     @Autowired public RefereeService refereeService;
 
-    @PostMapping("/scrape")
+    @PostMapping("/api/scrape")
     public String scrape() {
         JavaScraper javaScraper = new JavaScraper();
         Document document = javaScraper.getStaticDocument(

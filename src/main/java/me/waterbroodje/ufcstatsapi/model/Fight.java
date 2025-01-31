@@ -16,21 +16,21 @@ public class Fight {
     private String fightId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "first_fighter_id", referencedColumnName = "fighter_id") // Correct column name
+    @JoinColumn(name = "first_fighter_id", referencedColumnName = "fighter_id")
     private Fighter firstFighter;
 
     @Column(name = "first_fighter_result")
     private String firstFighterResult;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "second_fighter_id", referencedColumnName = "fighter_id") // Correct column name
+    @JoinColumn(name = "second_fighter_id", referencedColumnName = "fighter_id")
     private Fighter secondFighter;
 
     @Column(name = "second_fighter_result")
     private String secondFighterResult;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "referee_id", referencedColumnName = "referee_id") // Correct column name
+    @JoinColumn(name = "referee_id", referencedColumnName = "referee_id")
     private Referee referee;
 
     @Column(name = "head")

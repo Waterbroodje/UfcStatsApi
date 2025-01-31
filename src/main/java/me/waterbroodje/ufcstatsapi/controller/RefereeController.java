@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/referees")
+@RequestMapping("/api/referees")
 public class RefereeController {
 
     @Autowired private RefereeService refereeService;

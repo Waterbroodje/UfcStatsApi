@@ -20,8 +20,8 @@ public class FighterService {
     }
 
     @Transactional
-    public Fighter saveFighter(Fighter fighter) {
-        return fighterRepository.save(fighter);
+    public void saveFighter(Fighter fighter) {
+        fighterRepository.save(fighter);
     }
 
     public List<Fighter> getAllFighters() {
