@@ -9,5 +9,4 @@ public class FightController {
 
     @Autowired private FightService fightService;
 
-
 }
