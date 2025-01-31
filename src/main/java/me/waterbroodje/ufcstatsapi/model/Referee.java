@@ -15,8 +15,9 @@ import lombok.Setter;
 public class Referee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremented ID
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "referee_id")
+    private Long refereeId;
 
     private String name;
 }

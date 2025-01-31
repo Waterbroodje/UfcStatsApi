@@ -16,11 +16,7 @@ public class FighterService {
     private FighterRepository fighterRepository;
 
     public Optional<Fighter> getFighterById(String id) {
-        return fighterRepository.findFighterById(id);
-    }
-
-    public List<Fighter> searchFightersByName(String name) {
-        return fighterRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name);
+        return fighterRepository.getFighterByFighterId(id);
     }
 
     @Transactional

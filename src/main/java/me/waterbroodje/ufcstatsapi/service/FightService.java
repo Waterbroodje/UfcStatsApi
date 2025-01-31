@@ -17,13 +17,17 @@ public class FightService {
     public Optional<Fight> getFight(String id) {
         return fightRepository.getFightByFightId(id);
     }
-
-    public List<Fight> getAll() {
-        return fightRepository.findAll();
-    }
-
+    
     @Transactional
     public void save(Fight fight) {
         fightRepository.save(fight);
+    }
+
+    public List<Fight> getAllFights() {
+        return fightRepository.findAll();
+    }
+
+    public Fight getFightById(String id) {
+        return fightRepository.getFightByFightId(id).orElse(null);
     }
 }

@@ -1,5 +1,6 @@
 package me.waterbroodje.ufcstatsapi.service;
 
+import me.waterbroodje.ufcstatsapi.model.Fighter;
 import me.waterbroodje.ufcstatsapi.model.Referee;
 import me.waterbroodje.ufcstatsapi.repository.RefereeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,9 @@ public class RefereeService {
     @Transactional
     public void save(Referee referee) {
         refereeRepository.save(referee);
+    }
+
+    public Optional<Referee> getRefereeById(Long id) {
+        return refereeRepository.getRefereeByRefereeId(id);
     }
 }

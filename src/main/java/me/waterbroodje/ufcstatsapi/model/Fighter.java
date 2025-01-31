@@ -15,8 +15,8 @@ import lombok.Setter;
 public class Fighter {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremented ID
-    private String id;
+    @Column(name = "fighter_id")
+    private String fighterId;
 
     private String name;
 }

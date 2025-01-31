@@ -1,4 +1,4 @@
-package me.waterbroodje.ufcstatsapi.component;
+package me.waterbroodje.ufcstatsapi.controller;
 
 import me.waterbroodje.JavaScraper;
 import me.waterbroodje.ufcstatsapi.model.Fight;
@@ -10,18 +10,22 @@ import me.waterbroodje.ufcstatsapi.service.RefereeService;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-@Component
-public class ScrapeComponent {
+@RestController
+@RequestMapping("/admin")
+public class AdminController {
 
-    @Autowired public static FightService fightService;
-    @Autowired public static FighterService fighterService;
-    @Autowired public static RefereeService refereeService;
+    @Autowired public FightService fightService;
+    @Autowired public FighterService fighterService;
+    @Autowired public RefereeService refereeService;
 
-    public static void main(String[] args) {
+    @PostMapping("/scrape")
+    public String scrape() {
         JavaScraper javaScraper = new JavaScraper();
         Document document = javaScraper.getStaticDocument(
                 "http://www.ufcstats.com/statistics/events/completed?page=all",
@@ -100,6 +104,7 @@ public class ScrapeComponent {
                                         String details = content.select(".b-fight-details__label:contains(Details:)").first().parent().parent().text().replace("Details: ", "");
 
                                         Fight databaseFight = fightService.getFight(dataLink.replace("http://www.ufcstats.com/fight-details/", "")).orElse(new Fight());
+                                        databaseFight.setFightId(dataLink.replace("http://www.ufcstats.com/fight-details/", ""));
                                         databaseFight.setHead(head);
                                         databaseFight.setMethod(method);
                                         databaseFight.setRound(round);
@@ -107,7 +112,9 @@ public class ScrapeComponent {
                                         databaseFight.setTimeFormat(timeFormat);
                                         databaseFight.setDetails(details);
                                         databaseFight.setFirstFighterResult(firstFighterResult.get());
+                                        databaseFight.setFirstFighter(firstFighter.get());
                                         databaseFight.setSecondFighterResult(secondFighterResult.get());
+                                        databaseFight.setSecondFighter(secondFighter.get());
 
                                         Referee databaseReferee = refereeService.getRefereeByName(referee).orElse(new Referee());
                                         databaseReferee.setName(referee);
@@ -120,5 +127,7 @@ public class ScrapeComponent {
                                 });
                     }
                 });
+
+        return "Scraping!";
     }
 }

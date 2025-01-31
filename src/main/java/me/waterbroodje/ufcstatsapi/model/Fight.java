@@ -12,26 +12,25 @@ import lombok.*;
 public class Fight {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "fight_id")
     private String fightId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "first_fighter_id", referencedColumnName = "fighter_id")
+    @JoinColumn(name = "first_fighter_id", referencedColumnName = "fighter_id") // Correct column name
     private Fighter firstFighter;
 
     @Column(name = "first_fighter_result")
     private String firstFighterResult;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "second_fighter_id", referencedColumnName = "fighter_id")
+    @JoinColumn(name = "second_fighter_id", referencedColumnName = "fighter_id") // Correct column name
     private Fighter secondFighter;
 
     @Column(name = "second_fighter_result")
     private String secondFighterResult;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "referee_id", referencedColumnName = "referee_id")
+    @JoinColumn(name = "referee_id", referencedColumnName = "referee_id") // Correct column name
     private Referee referee;
 
     @Column(name = "head")
@@ -51,7 +50,4 @@ public class Fight {
 
     @Column(name = "details")
     private String details;
-
-    @Column(name = "result")
-    private String result;
 }
