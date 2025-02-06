@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+// Controller voor administratieve taken, voornamelijk data scraping
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -24,22 +25,27 @@ public class AdminController {
     @Autowired public FighterService fighterService;
     @Autowired public RefereeService refereeService;
 
+    // Start het scraping proces van UFC statistieken
     @PostMapping("/api/scrape")
     public String scrape() {
+        // Initialiseer de scraper
         JavaScraper javaScraper = new JavaScraper();
+        
+        // Haal de hoofdpagina op met alle evenementen
         Document document = javaScraper.getStaticDocument(
                 "http://www.ufcstats.com/statistics/events/completed?page=all",
                 true,
                 true,
                 JavaScraper.defaultHeaders());
 
+        // Begin met verwerken van evenementen
         document.getElementsByClass("b-statistics__table-events")
                 .get(0)
                 .getElementsByTag("tbody")
                 .get(0)
                 .getElementsByTag("tr")
                 .stream()
-                .skip(2) // Skip the first event, it's the upcoming one which doesnt have fight data.
+                .skip(2) // Sla het eerste evenement over (toekomstig evenement)
                 .forEach(event -> {
                     String url = event.getElementsByTag("a").attr("href");
                     if (!url.isEmpty()) {
